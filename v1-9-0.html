@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>homly.js v1.9.0: el bug que no se ve — homly blog</title>
+<meta name="description" content="Rutas con parámetros, store.resource, filtros en la URL, acciones por fila, head y prefetch. Y por qué la característica más importante de esta versión arregla un bug que nunca ibas a ver reportado.">
+<link rel="canonical" href="https://homly.blog/v1-9-0">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://homly.blog/v1-9-0">
+<meta property="og:title" content="homly.js v1.9.0: el bug que no se ve">
+<meta property="og:description" content="Rutas con parámetros, store.resource, filtros en la URL, acciones por fila, head y prefetch — y por qué la característica más importante arregla un bug que nunca ibas a ver reportado.">
+<meta property="article:published_time" content="2026-07-26">
+<meta name="twitter:card" content="summary">
+
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/blog.css">
+
+<script type="importmap">
+{ "imports": { "homly": "/homly.js" } }
+</script>
+</head>
+
+<body>
+<div class="wrap">
+
+<a class="marca" href="/">homly<span class="punto">.blog</span></a>
+
+<article>
+
+<h1>v1.9.0: el bug que no se ve</h1>
+<p class="fecha"><time datetime="2026-07-26">26 de julio de 2026</time></p>
+
+<p class="entradilla">
+  Seis características nuevas, pero la que más importa arregla algo que nunca ibas a ver
+  reportado: una búsqueda que devuelve el resultado equivocado, una de cada veinte veces.
+</p>
+
+<h2>La carrera</h2>
+
+<p>
+  Escribes <code>casa</code> en un buscador. Se dispara la petición. Antes de que vuelva,
+  escribes <code>casaquinta</code>. Se dispara la segunda. La segunda responde rápido, se
+  pintan los resultados de <code>casaquinta</code>… y medio segundo después aterriza la
+  primera y sobrescribe la lista con los resultados de <code>casa</code>.
+</p>
+
+<p>
+  El campo de búsqueda dice <code>casaquinta</code>. La lista muestra otra cosa. Nadie
+  reporta este bug porque nadie sabe describirlo: aparece cuando la red tiene un hipo, se
+  arregla solo al escribir una letra más, y no se reproduce cuando vas a revisarlo. Si
+  escribes el fetch a mano en <code>onMount</code>, lo tienes.
+</p>
+
+<p><code>store.resource</code> lo hace imposible:</p>
+
+<pre><code>store.resource('propiedades', ['q'], (q, { signal }) =&gt;
+  fetch(`/api/propiedades?q=${encodeURIComponent(q)}`, { signal })
+    .then(r =&gt; {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    }),
+  { debounce: 300 },
+);</code></pre>
+
+<p>
+  Cada ejecución aborta la anterior y lleva un token. Cuando una respuesta vuelve, si su
+  token ya no es el vigente, se descarta sin tocar nada. La vieja no puede ganarle a la
+  nueva ni aunque llegue después.
+</p>
+
+<h2>Tres claves, cero directivas nuevas</h2>
+
+<p>
+  <code>resource</code> no devuelve un objeto: registra <strong>tres claves</strong> en
+  el store —<code>propiedades</code>, <code>propiedadesLoading</code> y
+  <code>propiedadesError</code>— siguiendo el mismo patrón que ya usaba
+  <code>store.computed</code>. Son señales normales, así que las directivas que ya
+  conocías las leen sin necesidad de inventar nada:
+</p>
+
+<pre><code>&lt;input data-model="q"&gt;
+
+&lt;p data-if="propiedadesLoading"&gt;Cargando…&lt;/p&gt;
+&lt;p data-if="propiedadesError" data-bind="propiedadesError"&gt;&lt;/p&gt;
+
+&lt;template data-for="propiedades" data-key="id"&gt;
+  &lt;li&gt;&lt;strong data-bind="titulo"&gt;&lt;/strong&gt; — &lt;span data-bind="precio"&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/template&gt;</code></pre>
+
+<p>
+  Si hubiera devuelto <code>{ data, loading, error }</code> en una sola señal,
+  <code>data-for</code> no la podría leer y habría hecho falta una directiva nueva para
+  cada cosa. Esa decisión es la diferencia entre agregar una API y agregar un lenguaje.
+</p>
+
+<h3>Y cuando falla, no borra la pantalla</h3>
+
+<p>
+  Una recarga que falla publica el error en <code>propiedadesError</code> pero
+  <strong>conserva el último valor bueno</strong>. La lista que el usuario está mirando no
+  desaparece porque se cayó la conexión tres segundos.
+</p>
+
+<h2>Pruébalo aquí</h2>
+
+<div class="demo">
+  <demo-api></demo-api>
+  <p class="demo-nota">
+    Esto es homly ejecutándose en esta página. Escribe rápido y mira la pestaña de red:
+    hay <strong>una sola</strong> petición, no una por tecla. El filtro vive en la URL
+    —prueba <a href="/v1-9-0?q=cabudare">?q=cabudare</a>— así un resultado se comparte
+    por enlace. El retardo de 700 ms está simulado y rotulado; sin él la respuesta es
+    instantánea y no se alcanzaría a ver el estado de carga.
+  </p>
+</div>
+
+<h2>Lo demás</h2>
+
+<h3>Rutas con parámetros</h3>
+
+<pre><code>router.add('/blog/:slug', 'blog-post', () =&gt; import('./blog-post.js'));</code></pre>
+
+<p>
+  El valor le llega al componente <strong>como atributo</strong>:
+  <code>this.getAttribute('slug')</code>. Sin API nueva que aprender — los Custom
+  Elements ya tienen atributos, y usarlos evitó inventar un store global de ruta con
+  claves dinámicas. Las rutas estáticas le ganan a las dinámicas sin importar el orden de
+  registro, y el elemento se crea con <code>setAttribute</code>, que nunca interpreta
+  HTML: un segmento de URL no puede inyectar marcado.
+</p>
+
+<h3>Filtros en la URL</h3>
+
+<pre><code>Homly.bindQuery(store, ['q', 'orden', 'pagina'], this.signal);</code></pre>
+
+<p>
+  Refleja esas claves en el query string, en ambas direcciones. Convierte según el tipo
+  del valor inicial, porque la URL solo contiene texto y sin eso <code>pagina + 1</code>
+  daba <code>'21'</code>. Va <strong>antes</strong> del <code>resource</code>: así la
+  primera petición ya usa los filtros de la URL en lugar de pedir dos veces.
+</p>
+
+<h3>Acciones por fila</h3>
+
+<pre><code>borrar: async (target, { item }) =&gt; {
+  await fetch(`/api/propiedades/${item.state.id}`, { method: 'DELETE' });
+}</code></pre>
+
+<p>
+  Un <code>data-action</code> dentro de un <code>data-for</code> recibe el store de su
+  fila. Antes había que escribir el id en el marcado y volver a leerlo con
+  <code>closest</code>.
+</p>
+
+<h3><code>Homly.head</code>, y una aclaración</h3>
+
+<p>
+  Actualiza el título y las etiquetas <code>&lt;meta&gt;</code> al navegar. Y el README lo
+  dice sin rodeos: <strong>no es una característica de SEO</strong>.
+</p>
+
+<blockquote>
+  <p>
+    Los scrapers sociales —WhatsApp, Twitter, Slack— no ejecutan JavaScript. Un
+    <code>og:image</code> escrito después de hidratar no existe para ellos.
+  </p>
+</blockquote>
+
+<p>
+  Para que un enlace se previsualice bien, las etiquetas tienen que venir en el HTML que
+  entrega el servidor. Este post lo hace así: el <code>&lt;head&gt;</code> está escrito en
+  el archivo, y homly hidrata una sola isla —el demo de arriba. Si desactivas JavaScript,
+  el texto se lee igual.
+</p>
+
+<h3>Prefetch al pasar el cursor</h3>
+
+<p>
+  Pasar el cursor por un <code>data-router-link</code> —o llegar a él con el tabulador—
+  descarga el chunk de esa ruta. Una sola vez por ruta.
+</p>
+
+<h2>Un bug que ya estaba</h2>
+
+<p>
+  Al armar la arquitectura de estos tres sitios apareció otro: el router llamaba a
+  <code>preventDefault()</code> sin mirar nada. Consecuencia:
+  <strong>⌘+clic no abría una pestaña nueva en ningún enlace del router</strong>. Nunca. Y
+  un enlace a otro dominio fallaba con un <code>SecurityError</code>, porque
+  <code>pushState</code> entre orígenes distintos no existe.
+</p>
+
+<p>
+  Ahora se hace a un lado con otro origen, con <code>target</code>, con
+  <code>download</code> y con ⌘/Ctrl/Shift/Alt+clic y clic del medio.
+</p>
+
+<h2>Las primeras pruebas</h2>
+
+<p>
+  v1.9.0 estrena pruebas. <strong>102 verificaciones</strong> con el <code>assert</code>
+  de Node: sin frameworks, sin fixtures, sin CI, sin toolchain.
+</p>
+
+<pre><code>npm test</code></pre>
+
+<p>
+  El criterio quedó escrito en la guía de contribución: se prueba lo que falla en silencio
+  —un parser, una condición de carrera, una conversión de tipos— y nada más. Si una
+  verificación necesita más andamiaje que <code>assert</code>, probablemente el diseño se
+  pueda simplificar.
+</p>
+
+<table>
+  <tr><th>homly.js v1.9.0</th><th>Referencia</th></tr>
+  <tr><td>1089 líneas (568 de código)</td><td>—</td></tr>
+  <tr><td>5,1 KB gzip minificado</td><td>Alpine.js: 16,7 KB</td></tr>
+  <tr><td>0 dependencias</td><td>0 pasos de build</td></tr>
+</table>
+
+<h2>Instalar</h2>
+
+<pre><code>&lt;script type="importmap"&gt;
+{ "imports": { "homly": "https://cdn.jsdelivr.net/gh/softronicve/homly-framework@v1.9.0/homly.js" } }
+&lt;/script&gt;</code></pre>
+
+<p>
+  Compatible hacia atrás: nada de lo que funcionaba en 1.8.x cambia de comportamiento. El
+  <a href="https://github.com/softronicve/homly-framework/releases/tag/v1.9.0">release
+  completo</a> y la <a href="https://homly.dev">documentación</a>.
+</p>
+
+</article>
+
+<footer>
+  <a href="/">Blog</a>
+  <a href="https://homly.dev">Docs</a>
+  <a href="https://github.com/softronicve/homly-framework">GitHub</a>
+  <span class="sep">MIT · hecho con homly</span>
+</footer>
+
+</div>
+
+<script type="module" src="/components/demo-api.js"></script>
+</body>
+</html>

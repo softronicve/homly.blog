@@ -1,0 +1,109 @@
+/* Shell del blog. Lo comparten el índice y los posts; los tokens de color y tipografía
+   vienen de /assets/tokens.css, compartido en disco con homly.dev. */
+
+* { box-sizing: border-box; }
+
+body {
+  font: 17px/1.7 var(--hom-font);
+  margin: 0;
+  padding: 0 1.25rem 5rem;
+}
+
+.wrap { max-width: 40rem; margin: 0 auto; }
+
+.marca {
+  display: inline-block;
+  margin: 3rem 0 0;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: -.01em;
+}
+.marca .punto { color: var(--hom-accent); }
+
+h1 {
+  font-size: clamp(1.9rem, 5.5vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 2.5rem 0 .5rem;
+}
+
+.fecha { color: var(--hom-muted); font-size: .88rem; margin: 0 0 2.5rem; }
+
+.entradilla { font-size: 1.1rem; color: var(--hom-muted); }
+
+h2 {
+  font-size: 1.3rem;
+  letter-spacing: -.01em;
+  margin: 3rem 0 .5rem;
+}
+
+h3 { font-size: 1.02rem; margin: 2rem 0 .3rem; }
+
+pre {
+  margin: 1.2rem 0;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  background: var(--hom-code-bg);
+  border: 1px solid var(--hom-border);
+  border-radius: 10px;
+  font-family: var(--hom-mono);
+  font-size: .82rem;
+  line-height: 1.6;
+}
+
+:not(pre) > code {
+  font-family: var(--hom-mono);
+  font-size: .86em;
+  background: var(--hom-code-bg);
+  padding: .12em .38em;
+  border-radius: 4px;
+}
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: .2rem 0 .2rem 1.1rem;
+  border-left: 3px solid var(--hom-accent);
+  color: var(--hom-muted);
+}
+blockquote p { margin: .4rem 0; }
+
+.demo {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--hom-border);
+  border-radius: 12px;
+}
+.demo-nota { font-size: .82rem; color: var(--hom-muted); margin: 1rem 0 0; }
+
+table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--hom-border); }
+th { color: var(--hom-muted); font-weight: 600; font-size: .82rem; }
+
+/* Índice de posts */
+.posts { list-style: none; margin: 2.5rem 0 0; padding: 0; display: grid; gap: .5rem; }
+.posts a {
+  display: block;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--hom-border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.posts a:hover { border-color: var(--hom-accent); }
+.posts h2 { font-size: 1.05rem; margin: 0 0 .2rem; }
+.posts p { margin: 0; color: var(--hom-muted); font-size: .92rem; }
+.posts time { display: block; margin-top: .4rem; font-size: .8rem; color: var(--hom-muted); }
+
+footer {
+  margin-top: 4.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hom-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: .9rem;
+  color: var(--hom-muted);
+}
+footer a { text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .sep { margin-left: auto; }

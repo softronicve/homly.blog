@@ -1,0 +1,10 @@
+[
+  { "id": 1, "titulo": "Casa en Cabudare", "zona": "Cabudare", "precio": "USD 48.000", "ambientes": 3 },
+  { "id": 2, "titulo": "Apartamento en el este", "zona": "Barquisimeto", "precio": "USD 32.500", "ambientes": 2 },
+  { "id": 3, "titulo": "Casaquinta con patio", "zona": "Cabudare", "precio": "USD 75.000", "ambientes": 4 },
+  { "id": 4, "titulo": "Local comercial centro", "zona": "Barquisimeto", "precio": "USD 21.000", "ambientes": 1 },
+  { "id": 5, "titulo": "Townhouse en conjunto", "zona": "Cabudare", "precio": "USD 59.900", "ambientes": 3 },
+  { "id": 6, "titulo": "Apartamento amoblado", "zona": "Barquisimeto", "precio": "USD 38.000", "ambientes": 2 },
+  { "id": 7, "titulo": "Terreno en Tarabana", "zona": "Cabudare", "precio": "USD 15.000", "ambientes": 0 },
+  { "id": 8, "titulo": "Casa con anexo", "zona": "Barquisimeto", "precio": "USD 64.000", "ambientes": 5 }
+]

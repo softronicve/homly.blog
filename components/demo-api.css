@@ -1,0 +1,73 @@
+/* Se inyecta envuelto en @scope: nada de esto se escapa del componente. */
+
+.barra { display: flex; gap: .5rem; margin-bottom: .6rem; }
+
+.barra input[type="search"] {
+  flex: 1;
+  min-width: 0;
+  padding: .55rem .8rem;
+  font: inherit;
+  color: inherit;
+  background: var(--hom-bg);
+  border: 1px solid var(--hom-border);
+  border-radius: 8px;
+}
+
+.barra input:focus-visible {
+  outline: 2px solid var(--hom-accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.barra button {
+  padding: .55rem .85rem;
+  font: inherit;
+  font-size: .9rem;
+  color: var(--hom-muted);
+  background: none;
+  border: 1px solid var(--hom-border);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.barra button:hover:not(:disabled) { color: var(--hom-fg); }
+.barra button:disabled { opacity: .55; cursor: default; }
+
+.lentitud {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .84rem;
+  color: var(--hom-muted);
+  margin-bottom: .9rem;
+}
+
+.estado, .cuenta, .error {
+  margin: 0 0 .7rem;
+  font-size: .84rem;
+  color: var(--hom-muted);
+}
+.error { color: #d9534f; }
+
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+
+.lista li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .1rem .8rem;
+  padding: .6rem .8rem;
+  border: 1px solid var(--hom-border);
+  border-radius: 8px;
+  font-size: .93rem;
+}
+
+.zona { grid-column: 1; font-size: .82rem; color: var(--hom-muted); }
+.precio { grid-row: 1 / span 2; align-self: center; font-variant-numeric: tabular-nums; }
+
+.vacio {
+  padding: .8rem;
+  font-size: .9rem;
+  color: var(--hom-muted);
+  border: 1px dashed var(--hom-border);
+  border-radius: 8px;
+}

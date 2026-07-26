@@ -1,0 +1,26 @@
+<div class="barra">
+  <input data-model="q" type="search" placeholder="Filtrar por título o zona…" aria-label="Filtrar propiedades">
+  <button data-action="limpiar" type="button" data-if="q" hidden>Limpiar</button>
+  <button data-action="recargar" type="button" data-loading-text="…">Recargar</button>
+</div>
+
+<label class="lentitud">
+  <input data-model="lentitud" type="checkbox">
+  Simular red lenta (700 ms)
+</label>
+
+<p class="estado" data-if="propiedadesLoading" hidden>Cargando…</p>
+<p class="error" data-if="propiedadesError" data-bind="propiedadesError" hidden></p>
+<p class="cuenta"><strong data-bind="cuenta"></strong> propiedades</p>
+
+<ul class="lista">
+  <template data-for="propiedades" data-key="id">
+    <li>
+      <strong data-bind="titulo"></strong>
+      <span class="zona" data-bind="zona"></span>
+      <span class="precio" data-bind="precio"></span>
+    </li>
+  </template>
+</ul>
+
+<p class="vacio" data-if="vacio" hidden>Ninguna propiedad coincide con ese filtro.</p>

@@ -3,17 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>homly blog</title>
 <meta name="description" content="Notas sobre homly.js: decisiones de diseño, releases y cómo construir sin build.">
+<link rel="canonical" href="https://homly.blog/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://homly.blog/">
+<meta property="og:title" content="homly blog">
+<meta property="og:description" content="Notas sobre homly.js: decisiones de diseño, releases y cómo construir sin build.">
+<meta name="twitter:card" content="summary">
+
 <link rel="stylesheet" href="/assets/tokens.css">
-<style>
-  body { font: 16px/1.6 var(--hom-font, system-ui, sans-serif); max-width: 42rem; margin: 4rem auto; padding: 0 1.25rem; }
-  code { background: var(--hom-code-bg, #f4f4f5); padding: .15em .4em; border-radius: 4px; font-size: .9em; }
-</style>
+<link rel="stylesheet" href="/blog.css">
 </head>
+
 <body>
-  <h1>homly blog</h1>
-  <p>Notas sobre homly.js: decisiones de diseño, releases y cómo construir sin build.</p>
-  <p><code>en construcción</code> — mientras tanto, <a href="https://homly.dev">homly.dev</a>.</p>
+<div class="wrap">
+
+<a class="marca" href="/">homly<span class="punto">.blog</span></a>
+
+<h1>Notas sobre homly.js</h1>
+<p class="entradilla">
+  Decisiones de diseño, releases y cómo se construye sin paso de build.
+</p>
+
+<ul class="posts">
+  <li>
+    <a href="/v1-9-0">
+      <h2>v1.9.0: el bug que no se ve</h2>
+      <p>
+        Rutas con parámetros, <code>store.resource</code>, filtros en la URL, acciones por
+        fila, <code>head</code> y prefetch. Y por qué la característica más importante
+        arregla algo que nunca ibas a ver reportado.
+      </p>
+      <time datetime="2026-07-26">26 de julio de 2026</time>
+    </a>
+  </li>
+</ul>
+
+<footer>
+  <a href="https://homly.dev">Docs</a>
+  <a href="https://homly.world">homly.world</a>
+  <a href="https://github.com/softronicve/homly-framework">GitHub</a>
+  <span class="sep">MIT · hecho con homly</span>
+</footer>
+
+</div>
 </body>
 </html>
